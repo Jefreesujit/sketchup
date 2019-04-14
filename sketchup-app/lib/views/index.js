@@ -30,7 +30,7 @@ class App extends React.Component {
             <Switch>
               <Route exact path="/" component={Home} />
               <Route path="/create-sketch" component={CreateSketch} />
-              <Route path="view-sketch/:id" component={ViewSketch} />
+              <Route path="/view-sketch/:sketchId" component={ViewSketch} />
               <Route path="/404" component={Error404} />
               <Route nomatch component={Error404} />
             </Switch>

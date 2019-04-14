@@ -1,3 +1,74 @@
+.action-bar {
+  text-align: right;
+  margin: 30px; }
+
+.sketch-list-section {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 30px; }
+  .sketch-list-section .sketch-item {
+    width: 250px;
+    margin: 20px;
+    cursor: pointer;
+    box-sizing: border-box;
+    box-shadow: 0 2px 6px 2px grey; }
+    .sketch-list-section .sketch-item .thumbnail-image {
+      box-sizing: border-box;
+      width: 250px;
+      height: 180px; }
+    .sketch-list-section .sketch-item .sketch-name {
+      padding: 10px 20px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      background: #26a69a;
+      color: white;
+      font-size: 24px; }
+
+.create-sketch-page .create-sketch-container {
+  margin: auto;
+  text-align: center;
+  display: flex;
+  width: 80%; }
+
+.create-sketch-page .sketch-toolbox {
+  flex: 1; }
+  .create-sketch-page .sketch-toolbox .logo-section {
+    height: 70px; }
+  .create-sketch-page .sketch-toolbox .color-picker {
+    margin: 20px; }
+  .create-sketch-page .sketch-toolbox .tool {
+    cursor: pointer;
+    margin-bottom: 10px; }
+    .create-sketch-page .sketch-toolbox .tool:hover {
+      color: white;
+      background: rgba(38, 166, 154, 0.5); }
+  .create-sketch-page .sketch-toolbox .input-field label {
+    display: block; }
+  .create-sketch-page .sketch-toolbox .shape {
+    font-size: 60px;
+    line-height: 1; }
+
+.create-sketch-page .action-section {
+  display: flex;
+  margin: 15px 0;
+  justify-content: space-between; }
+  .create-sketch-page .action-section .sketch-name {
+    height: 35px;
+    border: none;
+    font-size: 32px;
+    text-transform: capitalize;
+    outline: none;
+    color: darkslategray; }
+
+.create-sketch-page .create-sketch-content {
+  flex: 10; }
+  .create-sketch-page .create-sketch-content .sketch-content {
+    text-align: center;
+    border: 25px solid #51a79a;
+    box-shadow: 0px 2px 6px 2px grey; }
+    .create-sketch-page .create-sketch-content .sketch-content canvas {
+      background-color: white; }
+
 html {
   line-height: 1.5;
   font-family: "Roboto", sans-serif;
@@ -12,7 +83,7 @@ html {
   html header {
     padding-top: 10px;
     background: #26a69a;
-    border-bottom: 4px solid #eaeaea;
+    box-shadow: 0px 2px 6px 0px grey;
     position: relative;
     top: 0;
     left: 0;
@@ -47,3 +118,13 @@ html {
 
 .hidden {
   display: none; }
+
+.btn.btn-primary {
+  color: #fff;
+  background-color: #26a69a;
+  text-align: center;
+  cursor: pointer;
+  border: none;
+  padding: 10px;
+  font-size: 18px;
+  box-shadow: 0px 1px 6px 0px grey; }

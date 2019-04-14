@@ -8,7 +8,10 @@ let state = {
     }
   },
   homePage: {
-    message: "Template Message"
+    sketchList: []
+  },
+  viewPage: {
+    sketchDetails: {}
   }
 };
 

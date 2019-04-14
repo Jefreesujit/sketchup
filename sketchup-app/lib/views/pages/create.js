@@ -10,20 +10,30 @@ class CreateSketch extends React.Component {
     super();
     this.state = {
         file: '',
-        imgName: '',
         isDrawing: false,
-        allowSave: false,
-        color: '#ff0000'
+        color: '#000',
+        sketchName: 'untitled'
     };
-
+    this.prevPos = { x: 0, y: 0 };
     this.canvas = React.createRef();
     this.image = React.createRef();
-    this.mouseUpHandler = this.mouseToggleHandler(false);
-    this.mouseDownhandler = this.mouseToggleHandler(true);
   }
 
-  mouseToggleHandler = (isDrawing) => {
-    this.setState({isDrawing});
+  mouseUpHandler = () => {
+    this.setState({isDrawing: false});
+  }
+
+  componentDidMount () {
+    this.offsetLeft = this.canvas.current.offsetLeft;
+    this.offsetTop = this.canvas.current.offsetTop;
+  }
+
+  mouseDownhandler = (event) => {
+    const x = event.pageX - this.offsetLeft,
+          y = event.pageY - this.offsetTop;
+
+    this.prevPos = {x, y};
+    this.setState({isDrawing: true});
   }
 
   mouseMoveHandler = (event) => {
@@ -34,9 +44,27 @@ class CreateSketch extends React.Component {
    const x = event.pageX - this.offsetLeft,
          y = event.pageY - this.offsetTop;
 
-    ctx.moveTo(0, 0);
+    ctx.moveTo(this.prevPos.x, this.prevPos.y);
     ctx.lineTo(x, y);
+    ctx.strokeStyle = this.state.color;
     ctx.stroke();
+    this.prevPos = {x, y};
+  }
+
+  drawRectangle = (event) => {
+
+  }
+
+  colorPickHandler = (event) => {
+    this.setState({
+      color: event.target.value
+    });
+  }
+
+  sketchNamehandler = (event) => {
+    this.setState({
+      sketchName: event.target.value
+    });
   }
 
   filePickHandler = (event) => {
@@ -66,9 +94,13 @@ class CreateSketch extends React.Component {
   }
 
   saveImageHandler = () => {
-    let dataUrl = this.canvas.current.toDataURL(), imgData, self = this;
+    const imgType = 'image/png', dataUrl = this.canvas.current.toDataURL(imgType);
 
-    this.props.dispatch(actions.saveImage({ file: dataUrl, type: 'image/png', name: 'file.png'}));
+    this.props.dispatch(actions.saveImage({
+      file: dataUrl,
+      type: imgType,
+      name: this.state.sketchName
+    }));
 
     // this.canvas.current.toBlob(function(blob) {
     //   console.log(blob);
@@ -78,22 +110,46 @@ class CreateSketch extends React.Component {
     //     type: blob.type
     //   }));
     // },'image/png');
+
+    //take user to home page once save succesful
   }
 
   render () {
     return (
       <Page className="create-sketch-page" header="Create">
         <div className="create-sketch-container">
+          <div className="sketch-toolbox">
+            <div className="logo-section"></div>
+            <div className="input-field upload tool">
+              <label htmlFor="filePicker">
+                <div className="shape">&#9635;</div><div>Image</div>
+              </label>
+              <input type="file" className="btn btn-upload hidden" id="filePicker" accept="image/png, image/jpeg" onChange={this.filePickHandler} />
+            </div>
+            <div className="input-field color tool">
+              <input type="color" id="colorPicker" className="color-picker" onChange={this.colorPickHandler} />
+              <label htmlFor="colorPicker">Color</label>
+            </div>
+            <div className="input-field shape-list">
+              <div className="tool"><div className="shape">-</div><div>Line</div></div>
+              <div className="tool"><div className="shape">&#9633;</div><div>Rectangle</div></div>
+              <div className="tool"><div className="shape">&#9675;</div><div>Circle</div></div>
+            </div>
+          </div>
+          <div className="create-sketch-content">
+            <div className="action-section">
+              <div className="input-field name">
+                <input type="text" className="sketch-name" placeholder="untitled" onChange={this.sketchNamehandler} />
+              </div>
             <div className="button-section">
-                <input type="file" className="btn btn-upload" accept="image/png, image/jpeg" onChange={this.filePickHandler} />
+              <button className="btn btn-primary" onClick={this.saveImageHandler}>Save Sketch</button>
+            </div>
             </div>
             <div className="sketch-content">
-                <canvas ref={this.canvas} width={640} height={425} onMouseDown={this.mouseDownhandler} onMouseUp={this.mouseUpHandler} onMouseMove={this.mouseMoveHandler}/>
-                <img ref={this.image} src={this.state.imgPath} className="hidden" onLoad={this.imgChangeHandler}/>
+              <canvas className="sketch-board" ref={this.canvas} width={960} height={540} onMouseDown={this.mouseDownhandler} onMouseUp={this.mouseUpHandler} onMouseMove={this.mouseMoveHandler}/>
+              <img ref={this.image} src={this.state.imgPath} className="hidden" onLoad={this.imgChangeHandler}/>
             </div>
-            <div className="button-section hide">
-                <button className="btn btn-save" onClick={this.saveImageHandler}>Save Image</button>
-            </div>
+          </div>
         </div>
       </Page>
     );

@@ -11,6 +11,17 @@ export function homePageReducer (state, action) {
   return newState;
 }
 
+export function viewPageReducer (state, action) {
+  let actionType = action.type,
+      newState = Object.assign({}, state);
+
+  if (actionType === actionEvents.SET_SKETCHDATA) {
+    newState = action.payload;
+  }
+
+  return newState;
+}
+
 export function appState (state, action) {
   let actionType = action.type,
       newState = Object.assign({}, state);

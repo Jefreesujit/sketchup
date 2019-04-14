@@ -9,7 +9,8 @@ const reducer = combineReducers({
   app: reducers.appState,
   dataRequests: reducers.dataRequests,
   routing: routerReducer,
-  homePage: reducers.homePageReducer
+  homePage: reducers.homePageReducer,
+  viewPage: reducers.viewPageReducer
 });
 
 const routingMiddleware = routerMiddleware(browserHistory);
