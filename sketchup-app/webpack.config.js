@@ -28,7 +28,7 @@ module.exports = env => {
     entry: {
       shim: path.join(buildSrcFldrPath, 'js', 'shim'),
       app: path.join(libPath, 'views'),
-      vendor: ['react', 'react-dom', 'react-router', 'react-redux', 'react-router-redux', 'moment', 'axios', 'classnames', 'redux', 'redux-thunk']
+      vendor: ['react', 'react-dom', 'react-router', 'react-redux', 'react-router-redux', 'moment', 'axios', 'redux', 'redux-thunk']
     },
     output: {
       publicPath: '/',

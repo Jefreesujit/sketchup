@@ -62,12 +62,14 @@
 
 .create-sketch-page .create-sketch-content {
   flex: 10; }
-  .create-sketch-page .create-sketch-content .sketch-content {
-    text-align: center;
-    border: 25px solid #51a79a;
-    box-shadow: 0px 2px 6px 2px grey; }
-    .create-sketch-page .create-sketch-content .sketch-content canvas {
-      background-color: white; }
+
+.view-sketch-container .sketch-content, .create-sketch-container .sketch-content {
+  text-align: center;
+  border: 25px solid #51a79a;
+  box-shadow: 0px 2px 6px 2px grey; }
+  .view-sketch-container .sketch-content .sketch-board, .create-sketch-container .sketch-content .sketch-board {
+    height: 540px;
+    background-color: white; }
 
 html {
   line-height: 1.5;
@@ -128,3 +130,22 @@ html {
   padding: 10px;
   font-size: 18px;
   box-shadow: 0px 1px 6px 0px grey; }
+
+.spinner-overlay {
+  position: fixed;
+  background: #ffffff80;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 999;
+  pointer-events: none; }
+  .spinner-overlay .spinner-body {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); }
+    .spinner-overlay .spinner-body .css-1hp1oan-style-style {
+      width: 60px;
+      height: 60px;
+      border-width: 6px; }

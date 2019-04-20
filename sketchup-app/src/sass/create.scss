@@ -57,14 +57,18 @@
 
   .create-sketch-content {
     flex: 10;
-    .sketch-content {
-      text-align: center;
-      border: 25px solid #51a79a;
-      box-shadow: 0px 2px 6px 2px grey;
+  }
+}
 
-      canvas {
-        background-color: white;
-      }
+.view-sketch-container,  .create-sketch-container {
+  .sketch-content {
+    text-align: center;
+    border: 25px solid #51a79a;
+    box-shadow: 0px 2px 6px 2px grey;
+
+    .sketch-board {
+      height: 540px;
+      background-color: white;
     }
   }
 }

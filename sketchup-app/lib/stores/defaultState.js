@@ -12,6 +12,9 @@ let state = {
   },
   viewPage: {
     sketchDetails: {}
+  },
+  dataRequests: {
+    loading: true
   }
 };
 

@@ -2,9 +2,13 @@
  * @module Redux actions
  */
 
-
 import { sketchList, sketchById, uploadFile, uploadSketch } from './query';
+import axios from 'axios';
+import history from '../stores/history';
 import graphQlClient from './appolloClient';
+import * as conf from '../../config.json';
+
+/* events */
 export const LOCATION_CHANGE = '@@router/LOCATION_CHANGE';
 export const FETCHING_PAGEDATA = 'FETCHING_PAGEDATA';
 export const SET_PAGEDATA = 'SET_PAGEDATA';
@@ -92,5 +96,21 @@ export function saveImage (vars) {
       variables: { ...vars }
     })
     .then(result => console.log(result))
+  };
+}
+
+export function uploadImage (data) {
+  console.log(`${conf.apiUrl}upload`);
+  const config = {
+    headers: { 'content-type': 'multipart/form-data' }
+  };
+
+  return function (dispatch) {
+    dispatch(savingImage());
+    axios.post(`${conf.apiUrl}/upload`, data, config)
+    .then(result => {
+      console.log(result);
+      history.push('/');
+    })
   };
 }

@@ -18,9 +18,17 @@ class ViewSketch extends React.Component {
   render () {
     const { sketchName, sketchUrl } = this.props.sketchDetails;
     return (
-      <Page className="home-page" header="Home">
-        <h2>{sketchName}</h2>
-        <img src={sketchUrl}></img>
+      <Page className="view-page" header="View Sketch" loading={this.props.loading}>
+        <div className="view-sketch-container">
+          <div className="view-sketch-content">
+            <h2>{sketchName}</h2>
+            <div className="sketch-content">
+              <div className="sketch-board">
+                <img src={sketchUrl}></img>
+              </div>
+            </div>
+          </div>
+        </div>
       </Page>
     );
   }
@@ -30,7 +38,8 @@ ViewSketch.displayName = 'ViewSketch';
 
 function select (state) {
   return {
-    sketchDetails: state.viewPage.sketchDetails
+    sketchDetails: state.viewPage.sketchDetails,
+    loading: state.dataRequests.loading
   };
 }
 

@@ -4,10 +4,6 @@
     "port": 3001,
     "protocol": "http",
     "environment": "dev",
-    "credentials": {
-        "accessKeyId": "AKIAJOL562VDTNEAJ4UQ",
-        "secretAccessKey": "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"
-    },
     "bucketName": "sketch-up",
-    "apiUrl": "http://localhost:3000"
+    "apiUrl": " https://41tglf5ay7.execute-api.us-west-2.amazonaws.com/dev"
 }

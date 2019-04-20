@@ -19,21 +19,25 @@ class Home extends React.Component {
     this.props.history.push(`/view-sketch/${id}`);
   }
 
+  createSketchHandler = () => {
+    this.props.history.push(`/create-sketch`);
+  }
+
   getSketchContent (list) {
     if (list.length) {
       return list.map((sketch, index) => {
         return <SketchItem {...sketch} key={index} onItemClick={this.onItemClick}/>
       })
     } else {
-      return <div className="no-sketch-content"></div>
+      return <div className="no-sketch-content">No Sketches available, click hte button above to create Sketches</div>
     }
   }
 
   render () {
     return (
-      <Page className="home-page" header="Home">
+      <Page className="home-page" header="Home" loading={this.props.loading} >
         <div className="action-bar">
-          <a href="/create-sketch"><button className="btn btn-primary">Create Sketch</button></a>
+          <a onClick={this.createSketchHandler}><button className="btn btn-primary">Create Sketch</button></a>
         </div>
         <div className="sketch-list-section">
           {this.getSketchContent(this.props.sketchList)}
@@ -47,7 +51,8 @@ Home.displayName = 'Home';
 
 function select (state) {
   return {
-    sketchList: state.homePage.sketchList
+    sketchList: state.homePage.sketchList,
+    loading: state.dataRequests.loading
   };
 }
 
