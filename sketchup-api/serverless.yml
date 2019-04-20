@@ -8,6 +8,11 @@ functions:
       - http:
           path: query
           method: post
+          cors: true
+      - http:
+          path: upload
+          method: post
+          cors: true
 provider:
   name: aws
   runtime: nodejs8.10

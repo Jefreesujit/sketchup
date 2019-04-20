@@ -19,13 +19,12 @@ const promisify = foo => new Promise((resolve, reject) => {
 })
 
 exports.uploadSketch = (sketch) => promisify(callback => {
-  const { sketchName, file, sketchType, sketchId } = sketch,
-        buffer = new Buffer(file.replace(/^data:image\/\w+;base64,/, ""),'base64'),
+  const { sketchType, body, sketchId, sketchName, encoding } = sketch,
         sketchKey = `${sketchId}-${sketchName}.png`
         params = {
           Key: sketchKey, 
-          Body: buffer,
-          ContentEncoding: 'base64',
+          Body: body,
+          ContentEncoding: encoding,
           ContentType: sketchType
         };
 

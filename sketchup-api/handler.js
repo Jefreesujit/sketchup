@@ -1,17 +1,12 @@
 const { ApolloServer } = require('apollo-server-lambda');
 const schema = require('./apollo/schema');
 const resolvers = require('./apollo/resolvers');
-const multipart = require('aws-lambda-multipart-parser');
+const { uploadSketch } = require('./controllers');
 
 const server = new ApolloServer({
   typeDefs: schema,
   resolvers,
   context: ({ event, context }) => {
-    const headers = {
-      'Access-Control-Allow-Origin': '*'
-    }
-
-    
     return {
       headers: event.headers,
       functionName: context.functionName,
@@ -21,29 +16,26 @@ const server = new ApolloServer({
   }
 });
 
-module.exports.query = server.createHandler({
+const graphqlHandler = server.createHandler({
   cors: {
     origin: '*',
     methods: 'POST',
-    allowHeaders: [
-      'Content-Type',
-      'Origin',
-      'Accept'
-    ]
+    allowHeaders: [ 'Content-Type', 'Origin', 'Accept' ]
   }
 });
 
-// module.exports.query = (event, context, callback) => {
-//   const contentType = event.headers['Content-Type'] || '',
-//         isMultipart = contentType.indexOf('multipart') !== -1;
-  
-//   if (event.body && isMultipart) {
-//     const parsedValue = multipart.parse(event);
-//     const response = await uploadSketch(parsedValue);
+const uploadHandler = async (event, context, callback) => {
+  const response = await uploadSketch(event);
+  callback(null, { statusCode: 200, body: JSON.stringify(response) });
+}
 
-//     return response;
-//   } else {
-//     return graphqlHandler(event, context, callback);
-//   }
-// }
+const routeMapping = {
+  upload: uploadHandler,
+  query: graphqlHandler
+};
 
+module.exports.query = (event, context, callback) => {
+  const route = event.path.slice(1);
+
+  return routeMapping[route](event, context, callback);
+}

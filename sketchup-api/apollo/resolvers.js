@@ -1,5 +1,5 @@
 const { GraphQLUpload } = require('graphql-upload');
-const { getSketchList, getSketchUrl, uploadSketch, uploadImage } = require('../graphql/resolvers');
+const { getSketchList, getSketchUrl, uploadSketch, uploadImage } = require('../controllers');
 
 module.exports = {
     Upload: GraphQLUpload,
