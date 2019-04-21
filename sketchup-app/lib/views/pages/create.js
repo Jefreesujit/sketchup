@@ -4,6 +4,14 @@ import React from 'react';
 import Page from '../components/page';
 import * as actions from '../../actions';
 import { connect } from 'react-redux';
+import classnames from 'classnames';
+
+const Shapes = {
+  Pencil: 'pencil',
+  Cirlce: 'circle',
+  Rectangle: 'rectangle',
+  Line: 'line'
+};
 
 class CreateSketch extends React.Component {
   constructor () {
@@ -12,26 +20,60 @@ class CreateSketch extends React.Component {
         file: '',
         isDrawing: false,
         color: '#000',
-        sketchName: 'untitled'
+        shape: Shapes.Pencil,
+        sketchName: 'untitled',
+        tempCanvas: false
     };
     this.prevPos = { x: 0, y: 0 };
     this.canvas = React.createRef();
     this.image = React.createRef();
-  }
-
-  mouseUpHandler = () => {
-    this.setState({isDrawing: false});
+    this.tempCanvas = React.createRef();
+    this.containerRef = React.createRef();
   }
 
   componentDidMount () {
-    const { offsetLeft, offsetTop, width, height } = this.canvas.current;
+    const { width, height } = this.canvas.current;
+    const { offsetLeft, offsetTop } = this.containerRef.current;
     const ctx = this.canvas.current.getContext("2d");
 
-    this.offsetLeft = offsetLeft;
-    this.offsetTop = offsetTop;
+    // border adjustments
+    this.offsetLeft = offsetLeft + 25;
+    this.offsetTop = offsetTop + 25;
 
     ctx.fillStyle = "white";
     ctx.fillRect(0, 0, width, height);
+  }
+
+  drawShape = (ctx, x, y) => {
+    ctx.beginPath();
+    ctx.strokeStyle = this.state.color;
+    const startX = this.startPos.x, startY = this.startPos.y;
+    if (this.state.shape === Shapes.Rectangle) {
+      ctx.rect(startX, startY, x - startX, y - startY);
+    } else if (this.state.shape === Shapes.Cirlce) {
+      ctx.arc(startX, startY, x - startX, 0, 2 * Math.PI)
+    } else if (this.state.shape === Shapes.Line) {
+      ctx.moveTo(startX, startY);
+      ctx.lineTo(x, y);
+    }
+    ctx.stroke();
+    ctx.closePath();
+  }
+
+  mouseUpHandler = (event) => {
+    const x = event.pageX - this.offsetLeft,
+    y = event.pageY - this.offsetTop,
+    ctx = this.canvas.current.getContext("2d");
+
+    this.drawShape(ctx, x, y);
+    this.setState({isDrawing: false});
+  }
+
+  setShape = (shape) => {
+    this.setState({
+      shape: shape,
+      tempCanvas: shape !== 'pencil'
+    });
   }
 
   mouseDownhandler = (event) => {
@@ -39,6 +81,7 @@ class CreateSketch extends React.Component {
           y = event.pageY - this.offsetTop;
 
     this.prevPos = {x, y};
+    this.startPos = {x, y};
     this.setState({isDrawing: true});
   }
 
@@ -46,17 +89,23 @@ class CreateSketch extends React.Component {
     if (!this.state.isDrawing) {
       return;
     }
-    const ctx = this.canvas.current.getContext("2d");
     const x = event.pageX - this.offsetLeft,
          y = event.pageY - this.offsetTop;
 
-    ctx.beginPath();
-    ctx.moveTo(this.prevPos.x, this.prevPos.y);
-    ctx.lineTo(x, y);
-    ctx.closePath();
-    ctx.strokeStyle = this.state.color;
-    ctx.stroke();
-    this.prevPos = {x, y};
+    if (this.state.shape === 'pencil') {
+      const ctx = this.canvas.current.getContext("2d");
+      ctx.beginPath();
+      ctx.moveTo(this.prevPos.x, this.prevPos.y);
+      ctx.lineTo(x, y);
+      ctx.closePath();
+      ctx.strokeStyle = this.state.color;
+      ctx.stroke();
+      this.prevPos = {x, y};
+    } else {
+      const ctx = this.tempCanvas.current.getContext("2d");
+      ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+      this.drawShape(ctx, x, y);
+    }
   }
 
   colorPickHandler = (event) => {
@@ -103,27 +152,47 @@ class CreateSketch extends React.Component {
   saveImageHandler = () => {
     const self = this,
           imgType = 'image/png',
-          dataUrl = this.canvas.current.toDataURL(imgType);
+          canvas = this.canvas.current,
+          tempCanvas = this.tempCanvas.current,
+          tempContext = tempCanvas.getContext('2d');
+
+    tempContext.clearRect(0, 0, tempCanvas.width, tempCanvas.height);
+    tempCanvas.width = 200;
+    tempCanvas.height = 120;
+    tempContext.drawImage(canvas, 0, 0, 200, 120);
+    const dataUrl = tempCanvas.toDataURL(imgType, 0.5);
 
     // this.props.dispatch(actions.saveImage({
     //   file: dataUrl,
     //   type: imgType,
     //   name: this.state.sketchName
     // }));
-    this.canvas.current.toBlob(function(blob) {
+
+    canvas.toBlob(function(blob) {
       console.log(blob);
       const formData = new FormData();
       formData.append('file', blob);
       formData.append('name', self.state.sketchName);
       formData.append('type', imgType);
+      formData.append('thumbnail', dataUrl);
 
       self.props.dispatch(actions.uploadImage(formData));
     }, imgType);
+
+    this.setState({
+      tempCanvas: false
+    });
   }
 
   render () {
+    const tempCanvasClass = classnames('temp-canvas', { hidden: !this.state.tempCanvas }),
+          pencilClass = classnames('tool', { active: this.state.shape === Shapes.Pencil }),
+          lineClass = classnames('tool', { active: this.state.shape === Shapes.Line }),
+          rectangleClass = classnames('tool', { active: this.state.shape === Shapes.Rectangle }),
+          circleClass = classnames('tool', { active: this.state.shape === Shapes.Cirlce });
+
     return (
-      <Page className="create-sketch-page" header="Create" loading={this.props.loading}>
+      <Page className="create-sketch-page" header="Create Sketch" loading={this.props.loading}>
         <div className="create-sketch-container">
           <div className="sketch-toolbox">
             <div className="logo-section"></div>
@@ -138,23 +207,33 @@ class CreateSketch extends React.Component {
               <label htmlFor="colorPicker">Color</label>
             </div>
             <div className="input-field shape-list">
-              <div className="tool"><div className="shape">-</div><div>Line</div></div>
-              <div className="tool"><div className="shape">&#9633;</div><div>Rectangle</div></div>
-              <div className="tool"><div className="shape">&#9675;</div><div>Circle</div></div>
+              <div className={pencilClass} onClick={() => this.setShape(Shapes.Pencil)}>
+                <div className="shape">+</div><div>Pencil</div>
+              </div>
+              <div className={lineClass} onClick={() => this.setShape(Shapes.Line)}>
+                <div className="shape">-</div><div>Line</div>
+              </div>
+              <div className={rectangleClass} onClick={() => this.setShape(Shapes.Rectangle)}>
+                <div className="shape">&#9633;</div><div>Rectangle</div>
+              </div>
+              <div className={circleClass} onClick={() => this.setShape(Shapes.Cirlce)}>
+                <div className="shape">&#9675;</div><div>Circle</div>
+              </div>
             </div>
           </div>
           <div className="create-sketch-content">
             <div className="action-section">
               <div className="input-field name">
-                <input type="text" className="sketch-name" placeholder="untitled" onChange={this.sketchNamehandler} />
+                <input type="text" className="sketch-name" placeholder="untitled" onChange={this.sketchNamehandler} autoFocus/>
               </div>
             <div className="button-section">
               <button className="btn btn-primary" onClick={this.saveImageHandler}>Save Sketch</button>
             </div>
             </div>
-            <div className="sketch-content">
+            <div className="sketch-content" ref={this.containerRef}>
               <canvas className="sketch-board" ref={this.canvas} width={1080} height={540} onMouseDown={this.mouseDownhandler} onMouseUp={this.mouseUpHandler} onMouseMove={this.mouseMoveHandler}/>
               <img ref={this.image} src={this.state.imgPath} className="hidden" onLoad={this.imgChangeHandler}/>
+              <canvas className={tempCanvasClass} ref={this.tempCanvas} width={1080} height={540} onMouseDown={this.mouseDownhandler} onMouseUp={this.mouseUpHandler} onMouseMove={this.mouseMoveHandler}></canvas>
             </div>
           </div>
         </div>

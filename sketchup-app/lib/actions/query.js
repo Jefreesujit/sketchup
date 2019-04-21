@@ -4,7 +4,8 @@ export const sketchList = gql`
 query sketchList {
   sketchList {
   sketchId,
-  sketchName
+  sketchName,
+  sketchUrl
   }
 }`;
 

@@ -29,13 +29,13 @@ class Home extends React.Component {
         return <SketchItem {...sketch} key={index} onItemClick={this.onItemClick}/>
       })
     } else {
-      return <div className="no-sketch-content">No Sketches available, click hte button above to create Sketches</div>
+      return <div className="no-sketch-content">No Sketches available, click the button above to create Sketches</div>
     }
   }
 
   render () {
     return (
-      <Page className="home-page" header="Home" loading={this.props.loading} >
+      <Page className="home-page" header="SketchUp" loading={this.props.loading} >
         <div className="action-bar">
           <a onClick={this.createSketchHandler}><button className="btn btn-primary">Create Sketch</button></a>
         </div>
