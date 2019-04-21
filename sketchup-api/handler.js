@@ -26,7 +26,13 @@ const graphqlHandler = server.createHandler({
 
 const uploadHandler = async (event, context, callback) => {
   const response = await uploadSketch(event);
-  callback(null, { statusCode: 200, body: JSON.stringify(response) });
+  callback(null, {
+    statusCode: 200,
+    headers: {
+      'Access-Control-Allow-Origin': '*'
+    },
+    body: JSON.stringify(response)
+  });
 }
 
 const routeMapping = {

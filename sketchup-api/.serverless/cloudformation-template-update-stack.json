@@ -129,7 +129,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/sketchup/dev/1555766321754-2019-04-20T13:18:41.754Z/sketchup.zip"
+          "S3Key": "serverless/sketchup/dev/1555854682206-2019-04-21T13:51:22.206Z/sketchup.zip"
         },
         "FunctionName": "sketchup-dev-query",
         "Handler": "handler.query",
@@ -155,14 +155,14 @@
         "IamRoleLambdaExecution"
       ]
     },
-    "QueryLambdaVersionXcozSBmPyNwHuF8l70hqKx4u5BEczjY54PWYwYq5tlw": {
+    "QueryLambdaVersionkXdEO6UFQQPVw8aIas3QBpZxMCyqB0FfrAFpvV5gXA": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "QueryLambdaFunction"
         },
-        "CodeSha256": "+OEfoX6YH8lR7pENS5qpSAXQJY5hcCIk5a7OZaDrmsU="
+        "CodeSha256": "ifFvFXeI5/et3rz9I5qW9FHWcPDuHjpPMmeYeSUxfow="
       }
     },
     "ApiGatewayRestApi": {
@@ -386,7 +386,7 @@
         "MethodResponses": []
       }
     },
-    "ApiGatewayDeployment1555766268094": {
+    "ApiGatewayDeployment1555854644096": {
       "Type": "AWS::ApiGateway::Deployment",
       "Properties": {
         "RestApiId": {
@@ -494,7 +494,7 @@
     "QueryLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "QueryLambdaVersionXcozSBmPyNwHuF8l70hqKx4u5BEczjY54PWYwYq5tlw"
+        "Ref": "QueryLambdaVersionkXdEO6UFQQPVw8aIas3QBpZxMCyqB0FfrAFpvV5gXA"
       }
     },
     "ServiceEndpoint": {

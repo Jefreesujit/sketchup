@@ -9,7 +9,6 @@ const catchHandler = (err) => console.log(err);
 const getSketchList = () => {
   return dynamoDb.getSketchList()
   .then(result => {
-    console.log('getSketchList', result.Items, typeof result.Items);
     return result.Items;
   })
   .catch(catchHandler);
@@ -30,11 +29,12 @@ const uploadSketch = async (event) => {
   const parsedValue = await multipart.parse(event);
 
   const { contentType: sketchType, content: body } = parsedValue.files[0],
+        sketchUrl = parsedValue.thumbnail,
         sketchName = parsedValue.name,
         sketchId = uuidv4();
 
   const { sketchKey } = await s3.uploadSketch({ sketchType, body, sketchId, sketchName })
-  const result = await dynamoDb.addSketch({ sketchName, sketchType, sketchId, sketchKey })
+  const result = await dynamoDb.addSketch({ sketchName, sketchType, sketchId, sketchKey, sketchUrl })
   return await {
     result: result,
     sketchId: sketchId,
