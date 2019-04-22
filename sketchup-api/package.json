@@ -1,0 +1,25 @@
+{
+  "name": "sketchup-api",
+  "version": "1.0.0",
+  "description": "A serverless querying service to fetch sketches",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest",
+    "start": "serverless offline"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "apollo-server-lambda": "^2.4.8",
+    "aws-sdk": "^2.435.0",
+    "graphql": "^14.2.1",
+    "graphql-upload": "^8.0.5",
+    "lambda-multipart-parser": "0.0.2",
+    "uuid": "^3.3.2"
+  },
+  "devDependencies": {
+    "serverless": "^1.40.0",
+    "serverless-http": "^1.9.1",
+    "serverless-offline": "^4.9.4"
+  }
+}

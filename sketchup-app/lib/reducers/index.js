@@ -11,6 +11,17 @@ export function homePageReducer (state, action) {
   return newState;
 }
 
+export function viewPageReducer (state, action) {
+  let actionType = action.type,
+      newState = Object.assign({}, state);
+
+  if (actionType === actionEvents.SET_SKETCHDATA) {
+    newState = action.payload;
+  }
+
+  return newState;
+}
+
 export function appState (state, action) {
   let actionType = action.type,
       newState = Object.assign({}, state);
@@ -27,9 +38,13 @@ export function dataRequests (state, action) {
       newState = Object.assign({}, state);
 
   if (actionType === actionEvents.SETTING_PAGEDATA) {
-    newState.settings = true;
+    newState.loading = true;
   } else if (actionType === actionEvents.SET_PAGEDATA) {
-    newState.settings = false;
+    newState.loading = false;
+  } else if (actionType === actionEvents.SAVING_IMAGE) {
+    newState.loading = true;
+  } else if (actionType === actionEvents.SAVE_IMAGE) {
+    newState.loading = false;
   }
 
   return newState;

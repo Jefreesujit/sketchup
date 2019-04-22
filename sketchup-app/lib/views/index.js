@@ -10,11 +10,11 @@ import { Router, Route, Switch } from 'react-router-dom';
 import { syncHistoryWithStore } from 'react-router-redux';
 import Home from './pages/home';
 import Error404 from './pages/error404';
-import { createBrowserHistory } from 'history';
+import browserHistory from '../stores/history';
 import CreateSketch from './pages/create';
 import ViewSketch from './pages/view';
 
-const history = syncHistoryWithStore(createBrowserHistory(), store);
+const history = syncHistoryWithStore(browserHistory, store);
 console.log(history);
 
 class App extends React.Component {
@@ -30,7 +30,7 @@ class App extends React.Component {
             <Switch>
               <Route exact path="/" component={Home} />
               <Route path="/create-sketch" component={CreateSketch} />
-              <Route path="view-sketch/:id" component={ViewSketch} />
+              <Route path="/view-sketch/:sketchId" component={ViewSketch} />
               <Route path="/404" component={Error404} />
               <Route nomatch component={Error404} />
             </Switch>

@@ -2,16 +2,19 @@
  * @module Redux actions
  */
 
+import { sketchList, sketchById, uploadFile, uploadSketch } from './query';
 import axios from 'axios';
-import gql from 'graphql-tag';
+import history from '../stores/history';
 import graphQlClient from './appolloClient';
+import * as conf from '../../config.json';
+
+/* events */
 export const LOCATION_CHANGE = '@@router/LOCATION_CHANGE';
 export const FETCHING_PAGEDATA = 'FETCHING_PAGEDATA';
 export const SET_PAGEDATA = 'SET_PAGEDATA';
+export const SET_SKETCHDATA = 'SET_SKETCHDATA';
 export const SAVE_IMAGE = 'SAVE_IMAGE';
 export const SAVING_IMAGE = 'SAVING_IMAGE';
-
-const apiUrl = 'http://localhost:3000/query';
 
 export function fetchingPageData () {
   return {
@@ -22,6 +25,13 @@ export function fetchingPageData () {
 export function setPageData (data) {
   return {
     type: SET_PAGEDATA,
+    payload: data
+  };
+}
+
+export function setSketchData (data) {
+  return {
+    type: SET_SKETCHDATA,
     payload: data
   };
 }
@@ -43,19 +53,12 @@ export function fetchPageData () {
   return function (dispatch) {
     dispatch(fetchingPageData());
     graphQlClient.query({
-      query: gql`
-      query sketchList {
-        sketchList {
-          sketchId,
-          sketchName
-        }
-      }`
+      query: sketchList
     })
     .then(function (response) {
-      console.log(response.data.data.sketchFile.sketchUrl);
-      var image = response.data.data.sketchFile.sketchUrl;
-      dispatch(setPageData({image}));
-  });
+      var sketchList = response.data.sketchList;
+      dispatch(setPageData({sketchList}));
+    });
   };
 }
 
@@ -63,21 +66,14 @@ export function getSketchById (sketchId) {
   return function (dispatch) {
     dispatch(fetchingPageData());
     graphQlClient.query({
-      query: gql`
-      query sketchById($sketchId: String!) {
-        sketchById(sketchId: $sketchId) {
-          sketchId,
-          sketchName,
-          sketchUrl
-        }
-      }`,
+      query: sketchById,
       variables: { sketchId }
     })
     .then(function (response) {
-      console.log(response.data.data.sketchFile.sketchUrl);
-      var image = response.data.data.sketchFile.sketchUrl;
-      dispatch(setPageData({image}));
-  });
+      console.log(response.data.sketchById);
+      var sketchDetails = response.data.sketchById;
+      dispatch(setSketchData({sketchDetails}));
+    });
   };
 }
 
@@ -85,13 +81,7 @@ export function saveSketch (vars) {
   return function (dispatch) {
     dispatch(savingImage());
     graphQlClient.mutate({
-      mutation: gql`
-        mutation uploadSketch($file: Upload!, $name: String, $type: String) {
-          uploadSketch(file: $file, sketchName: $name, sketchType: $type) {
-            sketchId
-          }
-        }
-      `,
+      mutation: uploadSketch,
       variables: { ...vars }
     })
     .then(result => console.log(result))
@@ -102,15 +92,25 @@ export function saveImage (vars) {
   return function (dispatch) {
     dispatch(savingImage());
     graphQlClient.mutate({
-      mutation: gql`
-        mutation uploadFile($file: String!, $name: String, $type: String) {
-          uploadFile(file: $file, sketchName: $name, sketchType: $type) {
-            sketchId
-          }
-        }
-      `,
+      mutation: uploadFile,
       variables: { ...vars }
     })
     .then(result => console.log(result))
+  };
+}
+
+export function uploadImage (data) {
+  console.log(`${conf.apiUrl}upload`);
+  const config = {
+    headers: { 'content-type': 'multipart/form-data' }
+  };
+
+  return function (dispatch) {
+    dispatch(savingImage());
+    axios.post(`${conf.apiUrl}/upload`, data, config)
+    .then(result => {
+      console.log(result);
+      history.push('/');
+    })
   };
 }

@@ -1,0 +1,65 @@
+service: sketchup
+plugins:
+  - serverless-offline
+functions:
+  query:
+    handler: handler.query
+    events:
+      - http:
+          path: query
+          method: post
+          cors: true
+      - http:
+          path: upload
+          method: post
+          cors: true
+provider:
+  name: aws
+  runtime: nodejs8.10
+  region: us-west-2
+  stage: dev
+  environment:
+    DYNAMODB_TABLE: ${self:service}-${self:provider.stage}
+    S3_BUCKET: ${self:service}-${self:provider.stage}
+    APP_ENV: ${self:provider.stage}
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+      Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"
+    - Effect: Allow
+      Action:
+        - s3:ListBucket
+      Resource: "arn:aws:s3:::${self:provider.environment.S3_BUCKET}"
+    - Effect: Allow
+      Action:
+        - s3:PutObject
+        - s3:GetObject
+        - s3:DeleteObject
+      Resource: "arn:aws:s3:::${self:provider.environment.S3_BUCKET}/*"
+resources:
+  Resources:
+    SketchTable:
+      Type: 'AWS::DynamoDB::Table'
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: sketchId
+            AttributeType: S
+          - AttributeName: sketchKey
+            AttributeType: S
+        KeySchema:
+          - AttributeName: sketchId
+            KeyType: HASH
+          - AttributeName: sketchKey
+            KeyType: RANGE
+        ProvisionedThroughput:
+          ReadCapacityUnits: 5
+          WriteCapacityUnits: 5
+        TableName: ${self:provider.environment.DYNAMODB_TABLE}
+    SketchBucket:
+      Type: 'AWS::S3::Bucket'
+      Properties:
+        BucketName: ${self:provider.environment.S3_BUCKET}

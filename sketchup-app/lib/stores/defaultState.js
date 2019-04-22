@@ -8,7 +8,13 @@ let state = {
     }
   },
   homePage: {
-    message: "Template Message"
+    sketchList: []
+  },
+  viewPage: {
+    sketchDetails: {}
+  },
+  dataRequests: {
+    loading: true
   }
 };
 
