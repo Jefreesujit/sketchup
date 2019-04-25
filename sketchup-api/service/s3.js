@@ -31,6 +31,20 @@ exports.uploadSketch = (sketch) => promisify(callback => {
 	s3.putObject(params, (err, data) => callback(err, { sketchKey }));
 });
 
+exports.uploadThumbnail = (thumbnail) => promisify(callback => {
+  const { sketchKey, thumbBody } = thumbnail,
+    params = {
+    Key: `thumbnail/${sketchKey}`,
+    Body: thumbBody
+  };
+
+  s3.putObject(params, (err, data) => callback(err, data));
+});
+
+exports.getThumbnail = (sketchKey) => {
+  return s3.getSignedUrl('getObject', { Key: `thumbnail/${sketchKey}`, Expires: 120 });
+}
+
 exports.getSketchList = () => promisify(callback => {
 	s3.listObjects({}, callback);
 });

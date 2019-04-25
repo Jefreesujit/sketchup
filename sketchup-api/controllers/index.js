@@ -3,13 +3,17 @@ const uuidv4 = require('uuid/v4');
 const s3 = require('../service/s3');
 const dynamoDb = require('../service/dynamodb');
 const multipart = require('lambda-multipart-parser');
+const sharp = require('sharp');
 
 const catchHandler = (err) => console.log(err);
 
 const getSketchList = () => {
   return dynamoDb.getSketchList()
   .then(result => {
-    return result.Items;
+    return result.Items.map(item => ({
+      ...item,
+      sketchUrl: s3.getThumbnail(item.sketchKey)
+    }));
   })
   .catch(catchHandler);
 };
@@ -29,12 +33,14 @@ const uploadSketch = async (event) => {
   const parsedValue = await multipart.parse(event);
 
   const { contentType: sketchType, content: body } = parsedValue.files[0],
-        sketchUrl = parsedValue.thumbnail,
         sketchName = parsedValue.name,
         sketchId = uuidv4();
 
-  const { sketchKey } = await s3.uploadSketch({ sketchType, body, sketchId, sketchName })
-  const result = await dynamoDb.addSketch({ sketchName, sketchType, sketchId, sketchKey, sketchUrl })
+  const thumbBody = await sharp(body).resize(250, 180).toBuffer();
+
+  const { sketchKey } = await s3.uploadSketch({ sketchType, body, sketchId, sketchName });
+  const { thumbKey } = await s3.uploadThumbnail({ sketchKey, thumbBody });
+  const result = await dynamoDb.addSketch({ sketchName, sketchType, sketchId, sketchKey });
   return await {
     result: result,
     sketchId: sketchId,
