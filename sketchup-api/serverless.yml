@@ -15,9 +15,9 @@ functions:
           cors: true
 provider:
   name: aws
-  runtime: nodejs8.10
+  runtime: nodejs12.x
   region: us-west-2
-  stage: dev
+  stage: stage
   environment:
     DYNAMODB_TABLE: ${self:service}-${self:provider.stage}
     S3_BUCKET: ${self:service}-${self:provider.stage}

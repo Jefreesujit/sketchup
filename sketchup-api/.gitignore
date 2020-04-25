@@ -3,6 +3,7 @@
 node_modules
 npm-debug.log
 .npm
+.serverless/*.zip
 
 ### Test ###
 mocha.json
@@ -24,4 +25,3 @@ mocha.json
 
 # workspace files are user-specific
 *.sublime-workspace
-

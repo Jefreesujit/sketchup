@@ -16,10 +16,50 @@
         }
       }
     },
+    "ServerlessDeploymentBucketPolicy": {
+      "Type": "AWS::S3::BucketPolicy",
+      "Properties": {
+        "Bucket": {
+          "Ref": "ServerlessDeploymentBucket"
+        },
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "s3:*",
+              "Effect": "Deny",
+              "Principal": "*",
+              "Resource": [
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":s3:::",
+                      {
+                        "Ref": "ServerlessDeploymentBucket"
+                      },
+                      "/*"
+                    ]
+                  ]
+                }
+              ],
+              "Condition": {
+                "Bool": {
+                  "aws:SecureTransport": false
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
     "QueryLogGroup": {
       "Type": "AWS::Logs::LogGroup",
       "Properties": {
-        "LogGroupName": "/aws/lambda/sketchup-dev-query"
+        "LogGroupName": "/aws/lambda/sketchup-stage-query"
       }
     },
     "IamRoleLambdaExecution": {
@@ -47,8 +87,7 @@
               "Fn::Join": [
                 "-",
                 [
-                  "dev",
-                  "sketchup",
+                  "sketchup-stage",
                   "lambda"
                 ]
               ]
@@ -59,11 +98,12 @@
                 {
                   "Effect": "Allow",
                   "Action": [
-                    "logs:CreateLogStream"
+                    "logs:CreateLogStream",
+                    "logs:CreateLogGroup"
                   ],
                   "Resource": [
                     {
-                      "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/sketchup-dev-query:*"
+                      "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/sketchup-stage*:*"
                     }
                   ]
                 },
@@ -74,7 +114,7 @@
                   ],
                   "Resource": [
                     {
-                      "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/sketchup-dev-query:*:*"
+                      "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/sketchup-stage*:*:*"
                     }
                   ]
                 },
@@ -86,14 +126,14 @@
                     "dynamodb:PutItem",
                     "dynamodb:UpdateItem"
                   ],
-                  "Resource": "arn:aws:dynamodb:us-west-2:*:table/sketchup-dev"
+                  "Resource": "arn:aws:dynamodb:us-west-2:*:table/sketchup-stage"
                 },
                 {
                   "Effect": "Allow",
                   "Action": [
                     "s3:ListBucket"
                   ],
-                  "Resource": "arn:aws:s3:::sketchup-dev"
+                  "Resource": "arn:aws:s3:::sketchup-stage"
                 },
                 {
                   "Effect": "Allow",
@@ -102,7 +142,7 @@
                     "s3:GetObject",
                     "s3:DeleteObject"
                   ],
-                  "Resource": "arn:aws:s3:::sketchup-dev/*"
+                  "Resource": "arn:aws:s3:::sketchup-stage/*"
                 }
               ]
             }
@@ -113,9 +153,10 @@
           "Fn::Join": [
             "-",
             [
-              "sketchup",
-              "dev",
-              "us-west-2",
+              "sketchup-stage",
+              {
+                "Ref": "AWS::Region"
+              },
               "lambdaRole"
             ]
           ]
@@ -129,9 +170,9 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/sketchup/dev/1555854682206-2019-04-21T13:51:22.206Z/sketchup.zip"
+          "S3Key": "serverless/sketchup/stage/1587839741668-2020-04-25T18:35:41.668Z/sketchup.zip"
         },
-        "FunctionName": "sketchup-dev-query",
+        "FunctionName": "sketchup-stage-query",
         "Handler": "handler.query",
         "MemorySize": 1024,
         "Role": {
@@ -140,13 +181,13 @@
             "Arn"
           ]
         },
-        "Runtime": "nodejs8.10",
+        "Runtime": "nodejs12.x",
         "Timeout": 6,
         "Environment": {
           "Variables": {
-            "DYNAMODB_TABLE": "sketchup-dev",
-            "S3_BUCKET": "sketchup-dev",
-            "APP_ENV": "dev"
+            "DYNAMODB_TABLE": "sketchup-stage",
+            "S3_BUCKET": "sketchup-stage",
+            "APP_ENV": "stage"
           }
         }
       },
@@ -155,25 +196,26 @@
         "IamRoleLambdaExecution"
       ]
     },
-    "QueryLambdaVersionkXdEO6UFQQPVw8aIas3QBpZxMCyqB0FfrAFpvV5gXA": {
+    "QueryLambdaVersionT59GlLUC5khqmhAq2va5boilzLC2ciUsYjCaokXg": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "QueryLambdaFunction"
         },
-        "CodeSha256": "ifFvFXeI5/et3rz9I5qW9FHWcPDuHjpPMmeYeSUxfow="
+        "CodeSha256": "fLsBgIPD/wRrhwCaoF9B5DDdBEyNqgNfqHxBlqF3VI0="
       }
     },
     "ApiGatewayRestApi": {
       "Type": "AWS::ApiGateway::RestApi",
       "Properties": {
-        "Name": "dev-sketchup",
+        "Name": "stage-sketchup",
         "EndpointConfiguration": {
           "Types": [
             "EDGE"
           ]
-        }
+        },
+        "Policy": ""
       }
     },
     "ApiGatewayResourceQuery": {
@@ -217,8 +259,7 @@
             "ResponseParameters": {
               "method.response.header.Access-Control-Allow-Origin": true,
               "method.response.header.Access-Control-Allow-Headers": true,
-              "method.response.header.Access-Control-Allow-Methods": true,
-              "method.response.header.Access-Control-Allow-Credentials": true
+              "method.response.header.Access-Control-Allow-Methods": true
             },
             "ResponseModels": {}
           }
@@ -236,11 +277,10 @@
               "ResponseParameters": {
                 "method.response.header.Access-Control-Allow-Origin": "'*'",
                 "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent'",
-                "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,POST'",
-                "method.response.header.Access-Control-Allow-Credentials": "'false'"
+                "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,POST'"
               },
               "ResponseTemplates": {
-                "application/json": "#set($origin = $input.params(\"Origin\"))\n#if($origin == \"\") #set($origin = $input.params(\"origin\")) #end\n#if($origin == \"*\") #set($context.responseOverride.header.Access-Control-Allow-Origin = $origin) #end"
+                "application/json": "#set($origin = $input.params(\"Origin\"))\n#if($origin == \"\") #set($origin = $input.params(\"origin\")) #end\n#if($origin.matches(\".*\")) #set($context.responseOverride.header.Access-Control-Allow-Origin = $origin) #end"
               }
             }
           ]
@@ -264,8 +304,7 @@
             "ResponseParameters": {
               "method.response.header.Access-Control-Allow-Origin": true,
               "method.response.header.Access-Control-Allow-Headers": true,
-              "method.response.header.Access-Control-Allow-Methods": true,
-              "method.response.header.Access-Control-Allow-Credentials": true
+              "method.response.header.Access-Control-Allow-Methods": true
             },
             "ResponseModels": {}
           }
@@ -283,11 +322,10 @@
               "ResponseParameters": {
                 "method.response.header.Access-Control-Allow-Origin": "'*'",
                 "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent'",
-                "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,POST'",
-                "method.response.header.Access-Control-Allow-Credentials": "'false'"
+                "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,POST'"
               },
               "ResponseTemplates": {
-                "application/json": "#set($origin = $input.params(\"Origin\"))\n#if($origin == \"\") #set($origin = $input.params(\"origin\")) #end\n#if($origin == \"*\") #set($context.responseOverride.header.Access-Control-Allow-Origin = $origin) #end"
+                "application/json": "#set($origin = $input.params(\"Origin\"))\n#if($origin == \"\") #set($origin = $input.params(\"origin\")) #end\n#if($origin.matches(\".*\")) #set($context.responseOverride.header.Access-Control-Allow-Origin = $origin) #end"
               }
             }
           ]
@@ -386,13 +424,13 @@
         "MethodResponses": []
       }
     },
-    "ApiGatewayDeployment1555854644096": {
+    "ApiGatewayDeployment1587839731334": {
       "Type": "AWS::ApiGateway::Deployment",
       "Properties": {
         "RestApiId": {
           "Ref": "ApiGatewayRestApi"
         },
-        "StageName": "dev"
+        "StageName": "stage"
       },
       "DependsOn": [
         "ApiGatewayMethodQueryOptions",
@@ -411,17 +449,7 @@
           ]
         },
         "Action": "lambda:InvokeFunction",
-        "Principal": {
-          "Fn::Join": [
-            "",
-            [
-              "apigateway.",
-              {
-                "Ref": "AWS::URLSuffix"
-              }
-            ]
-          ]
-        },
+        "Principal": "apigateway.amazonaws.com",
         "SourceArn": {
           "Fn::Join": [
             "",
@@ -475,13 +503,13 @@
           "ReadCapacityUnits": 5,
           "WriteCapacityUnits": 5
         },
-        "TableName": "sketchup-dev"
+        "TableName": "sketchup-stage"
       }
     },
     "SketchBucket": {
       "Type": "AWS::S3::Bucket",
       "Properties": {
-        "BucketName": "sketchup-dev"
+        "BucketName": "sketchup-stage"
       }
     }
   },
@@ -494,7 +522,7 @@
     "QueryLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "QueryLambdaVersionkXdEO6UFQQPVw8aIas3QBpZxMCyqB0FfrAFpvV5gXA"
+        "Ref": "QueryLambdaVersionT59GlLUC5khqmhAq2va5boilzLC2ciUsYjCaokXg"
       }
     },
     "ServiceEndpoint": {
@@ -507,11 +535,15 @@
             {
               "Ref": "ApiGatewayRestApi"
             },
-            ".execute-api.us-west-2.",
+            ".execute-api.",
+            {
+              "Ref": "AWS::Region"
+            },
+            ".",
             {
               "Ref": "AWS::URLSuffix"
             },
-            "/dev"
+            "/stage"
           ]
         ]
       }

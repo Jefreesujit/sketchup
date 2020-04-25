@@ -100,9 +100,9 @@ export function saveImage (vars) {
 }
 
 export function uploadImage (data) {
-  console.log(`${conf.apiUrl}upload`);
+  console.log(`${conf.apiUrl}/upload`);
   const config = {
-    headers: { 'content-type': 'multipart/form-data' }
+    headers: { 'Content-Type': 'multipart/form-data' }
   };
 
   return function (dispatch) {

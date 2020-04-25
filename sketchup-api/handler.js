@@ -19,9 +19,8 @@ const server = new ApolloServer({
 const graphqlHandler = server.createHandler({
   cors: {
     origin: '*',
-    methods: 'POST',
-    allowHeaders: [ 'Content-Type', 'Origin', 'Accept' ]
-  }
+    methods: 'OPTIONS, POST, GET',
+    allowedHeaders: 'Origin, Content-Type, Accept'
 });
 
 const uploadHandler = async (event, context, callback) => {
@@ -29,9 +28,11 @@ const uploadHandler = async (event, context, callback) => {
   callback(null, {
     statusCode: 200,
     headers: {
-      'Access-Control-Allow-Origin': '*'
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "OPTIONS, POST, GET",
+      "Access-Control-Allow-Headers": 'Origin, Content-Type, Accept'
     },
-    body: JSON.stringify(response)
+    body: JSON.stringify(response),
   });
 }
 
