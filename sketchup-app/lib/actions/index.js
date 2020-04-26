@@ -70,7 +70,6 @@ export function getSketchById (sketchId) {
       variables: { sketchId }
     })
     .then(function (response) {
-      console.log(response.data.sketchById);
       var sketchDetails = response.data.sketchById;
       dispatch(setSketchData({sketchDetails}));
     });
@@ -100,7 +99,6 @@ export function saveImage (vars) {
 }
 
 export function uploadImage (data) {
-  console.log(`${conf.apiUrl}/upload`);
   const config = {
     headers: { 'Content-Type': 'multipart/form-data' }
   };

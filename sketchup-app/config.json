@@ -5,5 +5,5 @@
     "protocol": "http",
     "environment": "dev",
     "bucketName": "sketch-up",
-    "apiUrl": "https://r9judsrmwh.execute-api.us-west-2.amazonaws.com/stage"
+    "apiUrl": "https://kl61nt1mgl.execute-api.us-west-2.amazonaws.com/stage"
 }

@@ -231,9 +231,9 @@ class CreateSketch extends React.Component {
             </div>
             </div>
             <div className="sketch-content" ref={this.containerRef}>
-              <canvas className="sketch-board" ref={this.canvas} width={1080} height={540} onMouseDown={this.mouseDownhandler} onMouseUp={this.mouseUpHandler} onMouseMove={this.mouseMoveHandler}/>
+              <canvas className="sketch-board" ref={this.canvas} width={940} height={540} onMouseDown={this.mouseDownhandler} onMouseUp={this.mouseUpHandler} onMouseMove={this.mouseMoveHandler}/>
               <img ref={this.image} src={this.state.imgPath} className="hidden" onLoad={this.imgChangeHandler}/>
-              <canvas className={tempCanvasClass} ref={this.tempCanvas} width={1080} height={540} onMouseDown={this.mouseDownhandler} onMouseUp={this.mouseUpHandler} onMouseMove={this.mouseMoveHandler}></canvas>
+              <canvas className={tempCanvasClass} ref={this.tempCanvas} width={940} height={540} onMouseDown={this.mouseDownhandler} onMouseUp={this.mouseUpHandler} onMouseMove={this.mouseMoveHandler}></canvas>
             </div>
           </div>
         </div>

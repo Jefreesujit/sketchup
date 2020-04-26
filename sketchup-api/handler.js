@@ -20,7 +20,8 @@ const graphqlHandler = server.createHandler({
   cors: {
     origin: '*',
     methods: 'OPTIONS, POST, GET',
-    allowedHeaders: 'Origin, Content-Type, Accept'
+    allowedHeaders: 'Origin, Content-Type, Accept, content-type'
+  }
 });
 
 const uploadHandler = async (event, context, callback) => {
@@ -30,7 +31,7 @@ const uploadHandler = async (event, context, callback) => {
     headers: {
       "Access-Control-Allow-Origin": "*",
       "Access-Control-Allow-Methods": "OPTIONS, POST, GET",
-      "Access-Control-Allow-Headers": 'Origin, Content-Type, Accept'
+      "Access-Control-Allow-Headers": 'Origin, Content-Type, Accept, content-type'
     },
     body: JSON.stringify(response),
   });
@@ -43,6 +44,6 @@ const routeMapping = {
 
 module.exports.query = (event, context, callback) => {
   const route = event.path.slice(1);
-
+  console.log('inside lam', event, context);
   return routeMapping[route](event, context, callback);
 }

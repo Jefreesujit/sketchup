@@ -26,7 +26,7 @@ class App extends React.Component {
     return (
       <div className="view-container">
         <Provider store={store}>
-          <Router history={history}>
+          <Router history={browserHistory}>
             <Switch>
               <Route exact path="/" component={Home} />
               <Route path="/create-sketch" component={CreateSketch} />

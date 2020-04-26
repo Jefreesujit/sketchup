@@ -200,7 +200,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/sketchup/stage/1587839741668-2020-04-25T18:35:41.668Z/sketchup.zip"
+                "S3Key": "serverless/sketchup/stage/1587912386059-2020-04-26T14:46:26.059Z/sketchup.zip"
               },
               "FunctionName": "sketchup-stage-query",
               "Handler": "handler.query",
@@ -226,14 +226,14 @@
               "IamRoleLambdaExecution"
             ]
           },
-          "QueryLambdaVersionT59GlLUC5khqmhAq2va5boilzLC2ciUsYjCaokXg": {
+          "QueryLambdaVersionUSjcsnhhW536u8EZ78kInnUaPs4j2yz43m8v7BJi4aM": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "QueryLambdaFunction"
               },
-              "CodeSha256": "fLsBgIPD/wRrhwCaoF9B5DDdBEyNqgNfqHxBlqF3VI0="
+              "CodeSha256": "r9FbtNr4m/D4wKQZL2XTp/gmsAOF2czzzAAUmh7RQXs="
             }
           },
           "ApiGatewayRestApi": {
@@ -454,7 +454,7 @@
               "MethodResponses": []
             }
           },
-          "ApiGatewayDeployment1587839731334": {
+          "ApiGatewayDeployment1587912375566": {
             "Type": "AWS::ApiGateway::Deployment",
             "Properties": {
               "RestApiId": {
@@ -552,7 +552,7 @@
           "QueryLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "QueryLambdaVersionT59GlLUC5khqmhAq2va5boilzLC2ciUsYjCaokXg"
+              "Ref": "QueryLambdaVersionUSjcsnhhW536u8EZ78kInnUaPs4j2yz43m8v7BJi4aM"
             }
           },
           "ServiceEndpoint": {
@@ -716,7 +716,7 @@
         "timeout": 6,
         "runtime": "nodejs12.x",
         "vpc": {},
-        "versionLogicalId": "QueryLambdaVersionT59GlLUC5khqmhAq2va5boilzLC2ciUsYjCaokXg"
+        "versionLogicalId": "QueryLambdaVersionUSjcsnhhW536u8EZ78kInnUaPs4j2yz43m8v7BJi4aM"
       }
     },
     "resources": {
@@ -766,7 +766,7 @@
     "artifact": "/Users/admin/Documents/Jefree/Github/sketchup/sketchup-api/.serverless/sketchup.zip"
   },
   "package": {
-    "artifactDirectoryName": "serverless/sketchup/stage/1587839741668-2020-04-25T18:35:41.668Z",
+    "artifactDirectoryName": "serverless/sketchup/stage/1587912386059-2020-04-26T14:46:26.059Z",
     "artifact": "sketchup.zip"
   }
 }

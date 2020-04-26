@@ -4,11 +4,12 @@
     margin: auto;
     text-align: center;
     display: flex;
-    width: 80%;
+    // width: 80%;
   }
 
   .sketch-toolbox {
     flex: 1;
+    max-width: 120px;
 
     .logo-section {
       height: 70px;
@@ -62,12 +63,13 @@
 
   .create-sketch-content {
     flex: 10;
+    max-width: 990px;
   }
 }
 
 .view-sketch-container,  .create-sketch-container {
   .sketch-content {
-    text-align: center;
+    text-align: left;
     border: 25px solid #51a79a;
     box-shadow: 0px 2px 6px 2px grey;
     position: relative;

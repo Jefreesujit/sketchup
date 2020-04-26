@@ -34,11 +34,11 @@
 .create-sketch-page .create-sketch-container {
   margin: auto;
   text-align: center;
-  display: flex;
-  width: 80%; }
+  display: flex; }
 
 .create-sketch-page .sketch-toolbox {
-  flex: 1; }
+  flex: 1;
+  max-width: 120px; }
   .create-sketch-page .sketch-toolbox .logo-section {
     height: 70px; }
   .create-sketch-page .sketch-toolbox .color-picker {
@@ -71,10 +71,11 @@
     color: darkslategray; }
 
 .create-sketch-page .create-sketch-content {
-  flex: 10; }
+  flex: 10;
+  max-width: 990px; }
 
 .view-sketch-container .sketch-content, .create-sketch-container .sketch-content {
-  text-align: center;
+  text-align: left;
   border: 25px solid #51a79a;
   box-shadow: 0px 2px 6px 2px grey;
   position: relative; }
