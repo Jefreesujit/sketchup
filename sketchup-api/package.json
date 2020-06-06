@@ -10,7 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "apollo-server-lambda": "^2.4.8",
+    "apollo-server-lambda": "^2.14.2",
     "aws-sdk": "^2.435.0",
     "graphql": "^14.2.1",
     "graphql-upload": "^8.0.5",
